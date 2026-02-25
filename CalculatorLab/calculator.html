@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Калькулятор</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script> <!-- Добавьте эту строку -->
+</head>
+
+<body>
+
+    <!-- Картинка справа -->
+    <div class="image"> 
+        <img src="https://www.garant.ru/files/8/0/1871508/460_nahoditsya-v-otpuske-po-uhodu-za-rebenkom-i-odnovremenno-rabotat-nelzya.jpg">
+    </div>
+
+
+    <div class="lab-purpose"> <!--19. Добавьте поле с целью ЛР и подсветить слова: знакомство, HTML, CSS (с помощью тега).-->
+        Цель ЛР: <em class="highlight">знакомство</em> с <em class="highlight">HTML</em> и <em class="highlight">CSS</em>
+    </div>
+
+
+    <div class="calculator-wrapper">
+
+        <div class="sidebar">
+
+            <!--12. Добавьте кнопку для смены темы (смена цвета фона);-->
+            <button id="theme-toggle" class="sidebar-btn theme-btn">
+                <span class="btn-text">Сменить тему</span>
+            </button>
+
+            <!-- 16. Добавьте кнопку со ссылкой на GitHub; -->
+            <button id="github-link" class="sidebar-btn github-btn" onclick="window.open('https://github.com/yourusername', '_blank')" title="Открыть GitHub">
+                <span class="btn-text">GitHub</span>
+            </button>
+
+            <!-- 17. Сделайте поле с выпадающим списком; -->
+            <select id="dropdown-menu" class="sidebar-dropdown">
+                <option value="default">Выберите действие</option>
+                <option value="option1">Опция 1</option>
+                <option value="option2">Опция 2</option>
+                <option value="option3">Опция 3</option>
+            </select>
+        </div>
+
+        <div class="calculator">
+            <div>
+
+                <div id="result" class="result">
+                    0
+                </div>
+
+                <!-- блок с кнопками калькулятора. -->
+                <div>
+                    <!--горизонтальный ряд из четырех кнопок-->
+                    <div>
+                        <button id="btn_op_clear" class="my-btn secondary">C</button>
+                        <button id="btn_op_sign" class="my-btn secondary">+/-</button>
+                        <button id="btn_op_percent" class="my-btn secondary">%</button>
+                        <button id="btn_op_div" class="my-btn secondary">/</button>
+                        <button id="btn_op_000" class="my-btn primary">000</button>
+                    </div>
+
+                    <div>
+                        <button id="btn_digit_7" class="my-btn">7</button>
+                        <button id="btn_digit_8" class="my-btn">8</button>
+                        <button id="btn_digit_9" class="my-btn">9</button>
+                        <button id="btn_op_mult" class="my-btn primary">x</button>
+                        <button id="btn_op_factorial" class="my-btn primary">!</button>
+                    </div>
+
+                    <div>
+                        <button id="btn_digit_4" class="my-btn">4</button>
+                        <button id="btn_digit_5" class="my-btn">5</button>
+                        <button id="btn_digit_6" class="my-btn">6</button>
+                        <button id="btn_op_minus" class="my-btn primary">-</button>
+                        <button id="btn_op_square" class="my-btn primary">^2</button>
+                    </div>
+
+                    <div>
+                        <button id="btn_digit_1" class="my-btn">1</button>
+                        <button id="btn_digit_2" class="my-btn">2</button>
+                        <button id="btn_digit_3" class="my-btn">3</button>
+                        <button id="btn_op_plus" class="my-btn primary">+</button>
+                        <button id="btn_op_sqrt" class="my-btn primary">sqrt</button>
+                    </div>
+
+                    <div>
+                        <button id="btn_digit_0" class="my-btn">0</button>
+                        <button id="btn_digit_dot" class="my-btn">.</button>
+                        <button id="btn_op_equal" class="my-btn primary execute">=</button>
+                        <button id="btn_op_backspace" class="my-btn primary">bs</button>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="signature"> 9. Добавьте надпись внизу "ЛР выполнена ФИО";
+                ЛР выполнена Есаковой Ольгой.
+            </div>-->
+        </div>
+
+        <!--18. Сделайте сворачивающиеся и разворачивающиеся подробности (Автор -> ФИО, Группа);-->
+        <div class="author-footer">
+            <details class="footer-details">
+                <summary>Автор</summary>
+                <div class="footer-info">
+                    <p><strong>ФИО:</strong> Есакова Ольга Алексеевна</p>
+                    <p><strong>Группа:</strong> ИУ5-41Б </p>
+                </div>
+            </details>
+        </div>
+
+
+        <script>
+            // реализация смены темы
+            document.getElementById('theme-toggle').addEventListener('click', function () {
+                document.body.classList.toggle('light-theme');
+            });
+
+            // Обработчик для выпадающего списка
+            document.getElementById('dropdown-menu').addEventListener('change', function () {
+                const result = document.getElementById('result');
+            });
+        </script>
+
+</body>
+</html >
+
+
+

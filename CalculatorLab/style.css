@@ -1,0 +1,421 @@
+﻿/* Стили для центрирования калькулятора на странице */
+body {
+    display: flex;
+    flex-direction: column; /*10. все в колонку*/
+    justify-content: center; /*10. Выровняйте калькулятор по центру;*/
+    align-items: center; /*10. Выровняйте калькулятор по центру;*/
+    min-height: 100vh;
+    margin: 0;
+    background: #212529; /*2. Сделайте фон калькулятора темным (наподобие ночной темы); */
+    /*background: url('https://www.kovinov.com/travel/list/patagonia-900-600.jpg');*/ /*15. Добавьте любое изображение на фон;*/
+    /*background-size: cover;*/ /* Растягивает изображение на весь экран */
+    /*background-position: center;*/ /* Центрирует изображение */
+    /*background-repeat: no-repeat;*/ /* Запрещает повторение */
+    font-family: Arial, Helvetica, sans-serif;
+}
+/*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.image {
+    position: fixed;
+    right: 30px;
+    top: 45%;
+    transform: translateY(-50%);
+    padding: 20px;
+    background: #343a40;
+    border-radius: 4px;
+}
+
+body.light-theme .image {
+    background: rgb(196, 177, 158);
+}
+
+/*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.lab-purpose {
+    padding: 10px 30px;
+    background: #343a40;
+    border-radius: 4px;
+    color: #dee2e6;
+    font-size: 1.2rem;
+    text-align: center;
+    border: 2px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(5px);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+body.light-theme .lab-purpose {
+    background: #BA2E3A;
+}
+
+body.light-theme .lab-purpose:hover {
+    background: #8c222b;
+}
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+    /* Светлая тема */
+body.light-theme {
+    background: rgb(255, 255, 255);
+}
+
+body.light-theme .calculator {
+    background: rgb(196, 177, 158);
+    /*            box-shadow: 0 10px 20px rgba(0,0,0,0.1);*/
+}
+
+body.light-theme .result {
+    background: #f0f0f0;
+    color: #8c222b;
+}
+
+body.light-theme .my-btn {
+    background: rgb(252, 247, 241);
+    color: #8c222b;
+}
+
+body.light-theme .my-btn.primary {
+    background: rgb(252, 247, 241);
+    color: #BA2E3A;
+}
+
+body.light-theme .my-btn.secondary {
+    background: rgb(252, 247, 241);
+    color: #BA2E3A;
+}
+
+body.light-theme .my-btn.execute {
+    background: rgb(252, 247, 241);
+    color: #BA2E3A;
+}
+
+/*body.light-theme .signature {
+    color: #333333;
+}*/
+
+body.light-theme .sidebar {
+    background: rgb(196, 177, 158);
+}
+
+body.light-theme .sidebar-btn {
+    background: #BA2E3A;
+    color: floralwhite;
+}
+
+body.light-theme .sidebar-btn:hover {
+    background: #8c222b;
+}
+
+body.light-theme .sidebar-dropdown {
+    background: #BA2E3A;
+    color: floralwhite;
+}
+
+body.light-theme .sidebar-dropdown:hover {
+    background: #8c222b;
+}
+
+/* Основной контейнер для калькулятора и боковой панели */
+/*.calculator-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}*/
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.calculator-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+/*бок панель*/
+.sidebar {
+    position: fixed;
+    left: 30px;
+    top: 45%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px;
+    background: #343a40;
+    border-radius: 4px;
+    min-width: 160px;
+}
+
+/*кнопки*/
+.sidebar-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 10px;
+    border: none;
+    border-radius: 4px;
+    background: #dee2e6;
+    color: black;
+    transition: all 0.3s ease;
+}
+
+.sidebar-btn:hover {
+    background: #929496;
+}
+
+.sidebar-btn .btn-text {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/*выпадающий список*/
+.sidebar-dropdown {
+    width: 100%;
+    padding: 15px 10px;
+    border: none;
+    border-radius: 4px;
+    background: #dee2e6;
+    color: black;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    appearance: none;
+    background-position: right 10px center;
+    background-size: 20px;
+}
+
+.sidebar-dropdown:hover {
+    background: #929496;
+}
+
+.sidebar-dropdown option {
+    background: #dee2e6;
+    color: black;
+    padding: 10px;
+}
+
+/*смена фона окна результата*/
+.highlight-result {
+    background-color: #ffefd9 !important;
+}
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.calculator {
+    background: #5c9e87;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* кнопки калькулятора */
+.my-btn {
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 60px; 
+    height: 60px;
+    border-radius: 15px;
+    border: none;
+    background: #95dbc6;
+    color: #dee2e6;
+    font-size: 1.5rem;
+    font-family: 'Segoe UI', Arial, sans-serif; /* 6. Поменяйте шрифт цифр;*/
+    font-weight: bold; /* 7. Сделайте шрифт более толстым; */
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s;
+}
+
+.my-btn:hover {
+    background: #6d6d6d; /* 8/ Измените цвет при наведении мышки на кнопку на другой; */
+}
+
+.my-btn.primary {
+    background: #2a8c6f;
+}
+
+.my-btn.primary:hover {
+    background: #5f8bc9;
+}
+
+.my-btn.secondary {
+    background: #2a8c6f;
+}
+
+.my-btn.secondary:hover {
+    background: #3e5670;
+}
+
+/* (=) */
+.my-btn.execute {
+    width: 60px;
+    background: #0a5c43;
+}
+
+.my-btn.execute:hover {
+    background: #5fb963;
+}
+
+
+
+
+
+body.light-theme .my-btn:hover {
+    background: #6d6d6d; /* 8/ Измените цвет при наведении мышки на кнопку на другой; */
+}
+body.light-theme .my-btn.primary:hover {
+    background: #5f8bc9;
+}
+body.light-theme .my-btn.secondary:hover {
+    background: #3e5670;
+}
+body.light-theme .my-btn.execute:hover {
+    background: #5fb963;
+}
+
+
+
+/* окно калькулятора */
+.result {
+    width: 320px; /* 11. Увеличьте размер окна вывода; */
+    height: 70px;
+    margin-bottom: 20px;
+    padding-right: 15px;
+    background: #f7f7f5;
+    text-align: right;
+    color: #0c7052; /* 4. Измените цвет вывода результата на любой другой; */
+    font-size: 2.2rem;
+    font-family: 'Courier New', monospace;
+    font-weight: 100; /*13. Сделайте шрифт тоньше;*/
+    border-radius: 15px; /* 5. Сделайте окно вывода со скруглеными краями;*/
+    line-height: 70px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* дополнительный стиль для кнопки 0, чтобы она была чуть шире */
+#btn_digit_0 {
+    width: 130px;
+    border-radius: 15px;
+}
+
+/* подпись автора лр внизу калькулятора */
+/*.signature {
+    margin-top: 20px;
+    color: black;*/ /*14. Смените цвет шрифта;*/
+    /*font-size: 1rem;
+    font-family: Arial, sans-serif;
+    opacity: 0.8;
+}*/
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+/* сведения об авторе внизу страницы */
+.author-footer {
+    border: 2px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+    padding: 10px;
+    background: #1b1e21;
+    border-radius: 4px;
+    backdrop-filter: blur(5px);
+}
+
+body.light-theme .author-footer {
+    background: rgb(196, 177, 158);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.footer-details {
+    border: 2px solid rgba(255,255,255,0.01);
+    background: #babcbf;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.footer-details summary {
+    padding: 12px 25px;
+    color: #dee2e6;
+    font-weight: bold;
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    text-align: center;
+    background: #343a40;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+body.light-theme .footer-details summary {
+    background: #BA2E3A;
+}
+
+.footer-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.footer-details summary::after {
+    content: "▼";
+    font-size: 0.9rem;
+    margin-left: 12px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.footer-details[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.footer-details[open] {
+    background: white;
+}
+
+.footer-details[open] summary {
+    background: #252a2e;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.footer-info {
+    padding: 15px 25px;
+    color: #dee2e6;
+    background: #343a40;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 15px;
+}
+
+body.light-theme .footer-info {
+    background: #a62934;
+}
+
+.footer-info p {
+    margin: 5px 0;
+    font-size: 1rem;
+    grid-column: span 2;
+}
+
+.footer-info strong {
+    color: #dee2e6;
+    min-width: 80px;
+    display: inline-block;
+}
+
+/* убрать отступ у последней кнопки в ряду */
+.my-btn:last-child {
+    margin-right: 0;
+}
