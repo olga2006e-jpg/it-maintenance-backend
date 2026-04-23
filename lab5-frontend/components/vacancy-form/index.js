@@ -1,7 +1,7 @@
 export class VacancyFormComponent {
     constructor(parent) {
         this.parent = parent;
-        this.mode = 'create'; // 'create' or 'edit'
+        this.mode = 'create'; 
         this.vacancyId = null;
     }
 
