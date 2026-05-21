@@ -1,0 +1,21 @@
+{
+  "name": "lab4-stock-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nestjs/platform-express": "^11.1.19",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "nodemon": "^3.0.1"
+  }
+}
