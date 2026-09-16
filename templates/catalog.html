@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Транспорт — Логистика.Про{% endblock %}
+{% block content %}
+<main class="phone app-page catalog-page">
+  <section class="page-content">
+    <div class="page-card">
+      <h1 class="page-card-title">Выбор транспорта и фильтрация по тарифу</h1>
+
+      <form class="filter-row" method="get" action="/catalog">
+        <div class="slider-wrap">
+          <div class="slider-row">
+            <span class="slider-caption">от</span>
+            <input id="tariff-from" type="range" name="tariff_from"
+                   min="0" max="1000" step="10" value="{{ tariff_from }}">
+            <b class="slider-value" id="value-from">{{ tariff_from }}</b>
+          </div>
+          <div class="slider-row">
+            <span class="slider-caption">до</span>
+            <input id="tariff-to" type="range" name="tariff_to"
+                   min="0" max="1000" step="10" value="{{ tariff_to }}">
+            <b class="slider-value" id="value-to">{{ tariff_to }}</b>
+          </div>
+        </div>
+        <button class="search-button" type="submit">Поиск</button>
+      </form>
+
+      <div class="transport-grid" id="transport-grid">
+        {% for transport in transports %}
+        <article class="transport-card" data-tariff="{{ transport.price_per_km }}">
+          <img src="{{ transport.image_url or 'http://localhost:9000/medialab1/train.png' }}"
+            alt="{{ transport.title }}"
+            onerror="this.src='http://localhost:9000/medialab1/train.png'"
+            onclick="location.href='/?transport_id={{ transport.id }}'">
+          <div class="card-body">
+            <div class="title-row" onclick="location.href='/?transport_id={{ transport.id }}'">
+              <h2>{{ transport.title }}</h2>
+            </div>
+            <div class="title-divider"></div>
+            <div class="likes-row" onclick="location.href='/?transport_id={{ transport.id }}'">
+              <span class="heart">♥</span>
+              <span>{{ transport.likes }}</span>
+            </div>
+            <div class="metrics" onclick="location.href='/?transport_id={{ transport.id }}'">
+              <span>Скорость<br><b>{{ transport.speed_kmh }} км/ч</b></span>
+              <span>Тариф<br><b>{{ transport.price_per_km }} руб/км</b></span>
+            </div>
+
+            <div class="card-actions">
+              <form onsubmit="return false;">
+                <button type="submit" class="like-btn {% if transport.id in liked_ids %}liked{% endif %}">
+                  {% if transport.id in liked_ids %}В избранном{% else %}Нравится{% endif %}
+                </button>
+              </form>
+
+              <form action="/transport/{{ transport.id }}/delete" method="post">
+                <button type="submit" class="delete-btn">Удалить</button>
+              </form>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {% include "partials_nav.html" %}
+</main>
+
+<script>
+(() => {
+  const fromSlider = document.getElementById('tariff-from');
+  const toSlider = document.getElementById('tariff-to');
+  const fromValue = document.getElementById('value-from');
+  const toValue = document.getElementById('value-to');
+
+  function updateLabels() {
+    fromValue.textContent = `${fromSlider.value}`;
+    toValue.textContent = `${toSlider.value}`;
+  }
+
+  fromSlider.addEventListener('input', updateLabels);
+  toSlider.addEventListener('input', updateLabels);
+  updateLabels();
+})();
+</script>
+{% endblock %}
