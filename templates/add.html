@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Добавление — Логистика.Про{% endblock %}
+{% block content %}
+<main class="phone app-page">
+  <section class="page-content">
+    <div class="page-card">
+
+      {% if draft %}
+        <h1 class="page-card-title">Публикация услуги</h1>
+
+        <form class="transport-form" action="/publish/{{ draft.id }}" method="post">
+          <label class="field">
+            <span>Название</span>
+            <input type="text" value="{{ draft.title }}" readonly>
+          </label>
+
+          <label class="field">
+            <span>URL фото</span>
+            <input type="text" value="{{ draft.image_url or '' }}" readonly>
+          </label>
+
+          <label class="field">
+            <span>URL видео</span>
+            <input type="text" value="{{ draft.video_url or '' }}" readonly>
+          </label>
+
+          <label class="field">
+            <span>Краткое описание</span>
+            <input type="text" name="description" required
+                   placeholder="Например: Магистральный грузовик">
+          </label>
+
+          <label class="field">
+            <span>Скорость транспорта (км/ч)</span>
+            <input type="number" name="speed_kmh" min="0" required
+                   placeholder="Например: 60">
+          </label>
+
+          <label class="field">
+            <span>Тариф (руб. / км)</span>
+            <input type="number" name="price_per_km" min="0" required
+                   placeholder="Например: 150">
+          </label>
+
+          <button class="primary-button" type="submit">Опубликовать</button>
+        </form>
+
+      {% else %}
+        <h1 class="page-card-title">Добавление</h1>
+
+        <form class="transport-form" action="/add" method="post">
+          <input type="hidden" name="user_id" value="{{ user_id }}">
+
+          <label class="field">
+            <span>Название транспорта</span>
+            <input type="text" name="title" required placeholder="Например: Фура">
+          </label>
+
+          <label class="field">
+            <span>URL фото</span>
+            <input type="text" name="image_url"
+                   placeholder="http://localhost:9000/medialab1/fura.png">
+          </label>
+
+          <label class="field">
+            <span>URL видео</span>
+            <input type="text" name="video_url"
+                   placeholder="http://localhost:9000/medialab1/fura.mp4">
+          </label>
+
+          <button class="primary-button" type="submit">Далее</button>
+        </form>
+      {% endif %}
+
+    </div>
+  </section>
+
+  {% include "partials_nav.html" %}
+</main>
+{% endblock %}
