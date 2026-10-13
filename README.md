@@ -1,10 +1,38 @@
-# Логистика.Про — Лабораторная №3 (REST API)
+# Логистика.Про — Лабораторная №4 (Авторизация, Swagger, Redis)
+
+## Цель работы
+
+Завершение бэкенда для SPA: добавление авторизации через сессии и cookie,
+хранение сессий в Redis, документирование API через Swagger,
+автоматическое заполнение автора услуги при создании.
 
 ## Запуск
-1. `docker compose up -d` (PostgreSQL + MinIO)
-2. `alembic upgrade head`
-3. `pip install -r requirements.txt`
-4. `uvicorn main:app --reload`
+
+1. `docker compose up -d` — поднять PostgreSQL, MinIO, Redis.
+2. `alembic upgrade head` — применить миграции.
+3. `pip install -r requirements.txt` — установить зависимости.
+4. `uvicorn main:app --reload` — запустить сервер.
+
+Swagger UI: `http://127.0.0.1:8000/docs`
+ReDoc:      `http://127.0.0.1:8000/redoc`
+
+## Что нового в ЛР4
+
+- **Авторизация через сессии и cookie.** При логине создаётся UUID сессии,
+  который сохраняется в Redis по ключу `session:<uuid>` со значением `user_id`
+  и TTL 3600 секунд. Клиент получает HttpOnly-cookie `session_id`.
+- **Хеширование паролей.** Пароли хранятся в БД в виде bcrypt-хеша
+  (`passlib[bcrypt]`), исходный пароль нигде не сохраняется.
+- **Разделение доступа.** Без авторизации доступно только чтение (GET-методы).
+  Методы создателя (`POST`, `PUT`, `DELETE`, `POST /like`) требуют cookie `session_id`.
+- **Swagger с cookieAuth.** В Swagger UI добавлена кнопка Authorize для вставки
+  значения `session_id`.
+- **Автозаполнение автора.** При создании услуги (`POST /api/maintenances`)
+  поле `author_id` проставляется автоматически из текущей сессии.
+- **Переименование домена.** Сущность `Transport` переименована в `Maintenance`
+  (таблица `maintenances`, поле `likes.maintenance_id`).
+- **Redis как хранилище сессий.** Stateful-аутентификация: сессии переживают
+  перезапуск приложения и доступны всем инстансам.
 
 ## Таблицы БД
 
@@ -13,6 +41,7 @@
 |---|---|---|
 | id | integer PK | Идентификатор |
 | username | varchar(50) | Уникальное имя |
+| password_hash | varchar(255) | Bcrypt-хеш пароля |
 
 ### maintenances
 | Поле | Тип | Описание |
@@ -21,7 +50,7 @@
 | title | varchar(100) | Название |
 | description | varchar(500) | Описание |
 | status | varchar(20) | draft / published / deleted |
-| image_url | varchar(500) | Имя файла в MinIO (или путь заглушки) |
+| image_url | varchar(500) | Имя файла в MinIO |
 | video_url | varchar(500) | Имя файла в MinIO |
 | speed_kmh | integer | Скорость |
 | price_per_km | integer | Тариф |
@@ -41,32 +70,45 @@
 
 ## HTTP API
 
-| Метод | URL | Описание | Тело / Параметры |
+### Домен Users
+| Метод | URL | Описание | Входные данные | Выходные данные |
+|---|---|---|---|---|
+| POST | `/api/users/register` | Регистрация | `{username, password}` | `{id, username}` |
+| POST | `/api/users/login` | Вход, создаёт cookie `session_id` | `{username, password}` | `{user_id, username}` + `Set-Cookie` |
+| POST | `/api/users/logout` | Выход, удаляет сессию | cookie `session_id` | `{message}` |
+
+### Домен Maintenances
+| Метод | URL | Описание | Доступ |
 |---|---|---|---|
-| GET | `/api/maintenances` | Список published | `?search=&tariff_from=&tariff_to=` |
-| GET | `/api/feed` | Лента published | — |
-| GET | `/api/feed/{id}/next` | Следующая в ленте | `?next=true` |
-| GET | `/api/drafts` | Черновик текущего юзера | — |
-| POST | `/api/maintenances` | Создать черновик + файлы | `multipart/form-data`: `title`, `image`, `video` |
-| PUT | `/api/maintenances/{id}/publish` | Опубликовать | JSON: `description`, `speed_kmh`, `price_per_km` |
-| DELETE | `/api/maintenances/{id}` | Soft delete | — |
-| POST | `/api/maintenances/{id}/like` | Лайк 0/1 | JSON: `{"value": 0 \| 1}` |
-| POST | `/api/users/register` | Регистрация | JSON: `{"username": "..."}` |
-| POST | `/api/users/login` | Заглушка | — |
-| POST | `/api/users/logout` | Заглушка | — |
+| GET | `/api/maintenances` | Список услуг с фильтром | Гость, создатель |
+| GET | `/api/feed` | Первая карточка ленты | Гость, создатель |
+| GET | `/api/feed/{id}/next?next=true` | Следующая карточка ленты | Гость, создатель |
+| GET | `/api/drafts` | Черновик текущего пользователя | Создатель |
+| POST | `/api/maintenances` | Создать черновик + файлы | Создатель |
+| PUT | `/api/maintenances/{id}/publish` | Публикация | Автор |
+| DELETE | `/api/maintenances/{id}` | Soft delete | Автор |
+| POST | `/api/maintenances/{id}/like` | Поставить/снять лайк | Создатель |
 
-## Singleton-пользователь
+## Авторизация
 
-`core/security.py` → `get_current_user()` возвращает пользователя с
-константным `id=1` (`CURRENT_USER_ID`). Используется через
-`Depends(get_current_user)` во всех API-методах.
-В лабораторной №4 будет заменена на JWT-аутентификацию.
+- **Метод:** сессии в Redis + HttpOnly-cookie `session_id`.
+- **Логин:** `POST /api/users/login` → сервер создаёт `session:<uuid>` в Redis,
+  устанавливает cookie `session_id` (HttpOnly, SameSite=Lax, max-age=3600).
+- **Проверка:** зависимость `get_current_user` берёт `session_id` из cookie,
+  ищет запись в Redis, извлекает `user_id`, загружает пользователя из БД.
+- **Для гостей:** `get_current_user_optional` возвращает `None`, если cookie нет —
+  используется в GET-методах (лента, каталог).
 
-## Статусы услуг
+### Как авторизоваться в Swagger
 
-- `draft` — черновик, виден только автору через `/api/drafts`
-- `published` — опубликовано, видно всем в `/api/maintenances` и `/api/feed`
-- `deleted` — soft delete, клиенту не передаётся
+1. Открыть `http://127.0.0.1:8000/docs`.
+2. `POST /api/users/register` — создать пользователя.
+3. `POST /api/users/login` — войти. Ответ содержит `Set-Cookie: session_id=...`.
+4. Скопировать значение cookie из DevTools → Application → Cookies
+   (или из заголовков ответа).
+5. Нажать кнопку **Authorize** в Swagger, вставить значение `session_id`.
+6. Теперь защищённые методы (`POST`, `PUT`, `DELETE`) доступны.
 
-Переходы: `draft → published` (PUT publish), `published → deleted` (DELETE).
-Обратно в черновик вернуть нельзя.
+## Содержимое Redis
+
+Все активные сессии хранятся в Redis в виде пар ключ-значение:
