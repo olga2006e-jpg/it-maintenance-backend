@@ -1,0 +1,14 @@
+<nav class="bottom-nav" aria-label="Навигация">
+  <a href="/" class="nav-item {% if request.url.path == '/' %}active{% endif %}">
+    <span class="nav-icon">◉</span>
+    <small>Лента</small>
+  </a>
+  <a href="/add" class="nav-item {% if request.url.path == '/add' %}active{% endif %}">
+    <span class="nav-icon">▣</span>
+    <small>Добавление</small>
+  </a>
+  <a href="/catalog" class="nav-item {% if request.url.path == '/catalog' %}active{% endif %}">
+    <span class="nav-icon">▱</span>
+    <small>Транспорт</small>
+  </a>
+</nav>

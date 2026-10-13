@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Лента — Логистика.Про{% endblock %}
+{% block content %}
+<main class="phone feed-page">
+  <section class="reels" aria-label="Лента видеороликов" data-start="{{ start_index }}">
+    {% for maintenance in maintenances %}
+    <article class="reel {% if loop.index0 == start_index %}is-active{% endif %}"
+             data-index="{{ loop.index0 }}"
+             data-id="{{ maintenance.id }}">
+      {% if maintenance.video_url and maintenance.video_url.endswith('.gif') %}
+        <img class="reel-video" src="{{ maintenance.video_url }}" alt="{{ maintenance.title }}">
+      {% else %}
+        <video class="reel-video" autoplay muted loop playsinline
+              poster="{{ maintenance.image_url or placeholder_url }}">
+          <source src="{{ maintenance.video_url }}" type="video/mp4">
+        </video>
+      {% endif %}
+      <div class="video-shade"></div>
+
+      <div class="feed-copy">
+        <span class="brand">
+          <span class="brand-mark">★</span>
+          <span class="brand-name">Логистика.Про</span>
+        </span>
+        <h1>{{ maintenance.title }}</h1>
+
+        <p class="feed-description">{{ maintenance.description }}</p>
+
+        <button class="toggle-description" type="button" aria-expanded="false">
+          Ещё
+        </button>
+      </div>
+
+      <aside class="feed-actions" aria-label="Действия">
+        <form onsubmit="return false;" style="display: contents;">
+          <button class="round-action like-button {% if maintenance.id in liked_ids %}is-liked{% endif %}"
+                  type="submit" aria-label="Нравится">
+            <span class="heart">♥</span>
+            <span class="likes-count">{{ maintenance.likes }}</span>
+          </button>
+        </form>
+        <button class="round-action next-button" type="button" aria-label="Следующее видео">
+          <span>↓</span>
+        </button>
+
+        <div class="feed-stat">{{ maintenance.speed_kmh }} км/ч</div>
+        <div class="feed-stat">{{ maintenance.price_per_km }} ₽/км</div>
+      </aside>
+    </article>
+    {% endfor %}
+  </section>
+  {% include "partials_nav.html" %}
+</main>
+
+<script>
+(() => {
+  const reelsEl = document.querySelector('.reels');
+  const reels = [...document.querySelectorAll('.reel')];
+  let index = Number(reelsEl.dataset.start) || 0;
+
+  function openReel(next) {
+    index = (next + reels.length) % reels.length;
+    reels.forEach((reel, i) => {
+      const active = i === index;
+      reel.classList.toggle('is-active', active);
+      const video = reel.querySelector('video');
+      if (video) {
+        if (active) video.play().catch(() => {});
+        else video.pause();
+      }
+    });
+  }
+
+  openReel(index);
+
+  document.querySelectorAll('.next-button').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openReel(index + 1);
+    });
+  });
+
+  document.querySelectorAll('.toggle-description').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const copy = button.closest('.feed-copy');
+      const expanded = copy.classList.toggle('is-expanded');
+      button.setAttribute('aria-expanded', expanded);
+      button.textContent = expanded ? 'Свернуть' : 'Ещё';
+    });
+  });
+
+  let startY = null;
+  reelsEl.addEventListener('touchstart', e => {
+    startY = e.changedTouches[0].clientY;
+  }, {passive: true});
+  reelsEl.addEventListener('touchend', e => {
+    if (startY === null) return;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dy) > 45) openReel(index + (dy < 0 ? 1 : -1));
+    startY = null;
+  }, {passive: true});
+})();
+</script>
+{% endblock %}
