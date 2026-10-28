@@ -1,32 +1,61 @@
-# React + TypeScript + Vite
+# Логистика.Про — Frontend (ЛР №5)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+SPA на React + TypeScript для просмотра и фильтрации транспортных услуг. Данные — из мока (`src/data/mock.ts`), без бэкенда.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Страницы
+Лента (/feed)
+Полноэкранное видео (или placeholder.mp4, если video_url пуст).
 
-## Expanding the Oxlint configuration
+Название, описание (кнопка «Ещё» раскрывает/сворачивает).
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+Кнопка «♥» — лайк (счётчик меняется).
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+Кнопка «↓» — следующее видео (по кругу).
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Метрики: скорость (км/ч), тариф (₽/км).
+
+При ?id=N открывается на нужной карточке.
+
+Плитка (/catalog)
+Сетка карточек 2 колонки.
+
+Фильтр «от» и «до» (слайдеры 0–1000) + кнопка «Поиск» (фильтр применяется только по нажатию).
+
+Карточка: изображение (или placeholder.png, если image_url пуст), название, лайки, метрики, кнопка «Удалить» (удаляет из локального стейта).
+
+Клик по карточке → лента с ?id=N.
+
+Добавление (/add)
+Поле «Название транспорта» (обязательное).
+
+Поле «URL фото».
+
+Поле «URL видео».
+
+Кнопка «Далее» (внизу, форму не отправляет — бэкенда нет).
+
+Navbar (снизу, 4 пункта)
+Пункт	Доступность
+Лента	да
+Добавление	нет
+Транспорт	да
+Вход	нет
+Мок-данные
+src/data/mock.ts — MOCK_MAINTENANCES (5 услуг). У «Фуры» image_url: "" и video_url: "" — для проверки заглушек placeholder.png / placeholder.mp4.
+
+Технологии
+React 19, TypeScript, Vite 8, React-Bootstrap, React Router DOM 7. Без Redux и Context.
+
+Хуки
+useState — FeedPage, CatalogPage
+
+useEffect — FeedPage (сброс «Ещё» при смене видео)
+
+useMemo — CatalogPage (мемоизация фильтра)
+
+useNavigate — MaintenanceCard (переход с ?id=N)
+
+useSearchParams — FeedPage (чтение id из URL)
