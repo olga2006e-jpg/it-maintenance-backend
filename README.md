@@ -1,72 +1,32 @@
-# Логистика.Про — Лабораторная №3 (REST API)
+# React + TypeScript + Vite
 
-## Запуск
-1. `docker compose up -d` (PostgreSQL + MinIO)
-2. `alembic upgrade head`
-3. `pip install -r requirements.txt`
-4. `uvicorn main:app --reload`
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-## Таблицы БД
+Currently, two official plugins are available:
 
-### users
-| Поле | Тип | Описание |
-|---|---|---|
-| id | integer PK | Идентификатор |
-| username | varchar(50) | Уникальное имя |
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-### maintenances
-| Поле | Тип | Описание |
-|---|---|---|
-| id | integer PK | Идентификатор |
-| title | varchar(100) | Название |
-| description | varchar(500) | Описание |
-| status | varchar(20) | draft / published / deleted |
-| image_url | varchar(500) | Имя файла в MinIO (или путь заглушки) |
-| video_url | varchar(500) | Имя файла в MinIO |
-| speed_kmh | integer | Скорость |
-| price_per_km | integer | Тариф |
-| created_at | timestamp | Дата создания |
-| published_at | timestamp | Дата публикации |
-| author_id | integer FK users.id | Создатель |
-| likes | integer | Счётчик лайков |
+## React Compiler
 
-### likes
-| Поле | Тип | Описание |
-|---|---|---|
-| id | integer PK | Идентификатор |
-| user_id | integer FK users.id | Кто лайкнул |
-| maintenance_id | integer FK maintenances.id | Что лайкнули |
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-Уникальное ограничение: `(user_id, maintenance_id)`.
+## Expanding the Oxlint configuration
 
-## HTTP API
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
 
-| Метод | URL | Описание | Тело / Параметры |
-|---|---|---|---|
-| GET | `/api/maintenances` | Список published | `?search=&tariff_from=&tariff_to=` |
-| GET | `/api/feed` | Лента published | — |
-| GET | `/api/feed/{id}/next` | Следующая в ленте | `?next=true` |
-| GET | `/api/drafts` | Черновик текущего юзера | — |
-| POST | `/api/maintenances` | Создать черновик + файлы | `multipart/form-data`: `title`, `image`, `video` |
-| PUT | `/api/maintenances/{id}/publish` | Опубликовать | JSON: `description`, `speed_kmh`, `price_per_km` |
-| DELETE | `/api/maintenances/{id}` | Soft delete | — |
-| POST | `/api/maintenances/{id}/like` | Лайк 0/1 | JSON: `{"value": 0 \| 1}` |
-| POST | `/api/users/register` | Регистрация | JSON: `{"username": "..."}` |
-| POST | `/api/users/login` | Заглушка | — |
-| POST | `/api/users/logout` | Заглушка | — |
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+```
 
-## Singleton-пользователь
-
-`core/security.py` → `get_current_user()` возвращает пользователя с
-константным `id=1` (`CURRENT_USER_ID`). Используется через
-`Depends(get_current_user)` во всех API-методах.
-В лабораторной №4 будет заменена на JWT-аутентификацию.
-
-## Статусы услуг
-
-- `draft` — черновик, виден только автору через `/api/drafts`
-- `published` — опубликовано, видно всем в `/api/maintenances` и `/api/feed`
-- `deleted` — soft delete, клиенту не передаётся
-
-Переходы: `draft → published` (PUT publish), `published → deleted` (DELETE).
-Обратно в черновик вернуть нельзя.
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
